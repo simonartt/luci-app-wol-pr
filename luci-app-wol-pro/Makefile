@@ -29,11 +29,10 @@ define Package/luci-app-wol-pro/description
   Features: device memory, one-click wake, online detection, custom notes.
 endef
 
+# Source files path (relative to SDK root after copy step)
+PKG_SOURCE_DIR:=$(CURDIR)/package/luci-app-wol-pro
+
 define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./package/luci-app-wol-pro/luasrc $(PKG_BUILD_DIR)/
-	$(CP) ./package/luci-app-wol-pro/root $(PKG_BUILD_DIR)/
-	$(CP) ./package/luci-app-wol-pro/istore_meta.json $(PKG_BUILD_DIR)/
 endef
 
 define Build/Configure
@@ -49,21 +48,12 @@ define Package/luci-app-wol-pro/install
 	$(INSTALL_DIR) $(1)/usr/libexec/istoree
 	$(INSTALL_DIR) $(1)/usr/share/istore
 
-	# Install Lua controller
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/controller/wol-pro.lua $(1)/usr/lib/lua/luci/controller/
-
-	# Install Lua view
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/wol-pro/index.htm $(1)/usr/lib/lua/luci/view/wol-pro/
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/wol-pro/logs.htm $(1)/usr/lib/lua/luci/view/wol-pro/
-
-	# Install config file
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/root/etc/config/wol-pro $(1)/etc/config/
-
-	# Install iStore status script
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/root/usr/libexec/istoree/wol-pro.sh $(1)/usr/libexec/istoree/
-
-	# Install iStore metadata
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/istore_meta.json $(1)/usr/share/istore/$(PKG_NAME).json
+	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/luasrc/controller/wol-pro.lua $(1)/usr/lib/lua/luci/controller/
+	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/luasrc/view/wol-pro/index.htm $(1)/usr/lib/lua/luci/view/wol-pro/
+	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/luasrc/view/wol-pro/logs.htm $(1)/usr/lib/lua/luci/view/wol-pro/
+	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/root/etc/config/wol-pro $(1)/etc/config/
+	$(INSTALL_BIN) $(PKG_SOURCE_DIR)/root/usr/libexec/istoree/wol-pro.sh $(1)/usr/libexec/istoree/
+	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/istore_meta.json $(1)/usr/share/istore/$(PKG_NAME).json
 endef
 
 define Package/luci-app-wol-pro/postinst
