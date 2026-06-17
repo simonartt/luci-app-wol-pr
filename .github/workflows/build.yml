@@ -4,53 +4,64 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version override (optional)'
-        required: false
-        default: ''
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SDK_DIR: ${{ github.workspace }}/sdk
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build in openwrt/sdk container
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            build-essential gcc g++ binutils \
+            libncurses-dev gawk unzip python3 python3-distutils \
+            file wget rsync cpio git
+
+      - name: Download and extract OpenWRT SDK
+        run: |
+          SDK_URL="https://downloads.openwrt.org/releases/23.05.5/targets/rockchip/armv8/openwrt-sdk-23.05.5-rockchip-armv8_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
+          echo "Downloading SDK (~178 MB)..."
+          wget -q --show-progress "$SDK_URL"
+          echo "Extracting SDK..."
+          mkdir -p "$SDK_DIR"
+          tar -xJf openwrt-sdk-23.05.5-rockchip-armv8_gcc-12.3.0_musl.Linux-x86_64.tar.xz -C "$SDK_DIR" --strip-components=1
+          rm openwrt-sdk-23.05.5-rockchip-armv8_gcc-12.3.0_musl.Linux-x86_64.tar.xz
+
+      - name: Copy plugin source into SDK
+        run: |
+          mkdir -p "$SDK_DIR/package/luci-app-wol-pro"
+          cp -r luci-app-wol-pro/* "$SDK_DIR/package/luci-app-wol-pro/"
+
+      - name: Update feeds
+        working-directory: ${{ env.SDK_DIR }}
+        run: |
+          ./scripts/feeds update luci
+          ./scripts/feeds install -a -p luci
+
+      - name: Configure build
+        working-directory: ${{ env.SDK_DIR }}
+        run: |
+          echo "CONFIG_PACKAGE_luci-app-wol-pro=m" >> .config
+          make defconfig
+
+      - name: Compile
+        working-directory: ${{ env.SDK_DIR }}
+        run: |
+          make package/luci-app-wol-pro/clean V=s
+          make package/luci-app-wol-pro/compile V=s -j$(nproc)
+
+      - name: Collect artifacts
         run: |
           mkdir -p output
-          docker run --rm \
-            -v "${{ github.workspace }}/luci-app-wol-pro:/tmp/luci-app-wol-pro:ro" \
-            -v "${{ github.workspace }}/output:/output" \
-            -w /builder \
-            openwrt/sdk:rockchip-armv8-openwrt-23.05 \
-            bash -c "
-              set -ex
-              echo '>>> Setup SDK...'
-              ./setup.sh
-
-              echo '>>> Copy plugin source...'
-              mkdir -p package
-              cp -r /tmp/luci-app-wol-pro package/luci-app-wol-pro
-
-              echo '>>> Update feeds...'
-              ./scripts/feeds update luci
-              ./scripts/feeds install -a -p luci
-
-              echo '>>> Configure build...'
-              echo CONFIG_PACKAGE_luci-app-wol-pro=m >> .config
-              make defconfig
-
-              echo '>>> Compile...'
-              make package/luci-app-wol-pro/clean V=s
-              make package/luci-app-wol-pro/compile V=s -j\$(nproc)
-
-              echo '>>> Collect artifacts...'
-              find bin/packages -name 'luci-app-wol-pro*.ipk' -exec cp -v {} /output/ \;
-              ls -la /output/
-            "
+          find "$SDK_DIR/bin/packages" -name "luci-app-wol-pro*.ipk" -exec cp -v {} output/ \;
+          echo "=== Build output ==="
+          ls -la output/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
