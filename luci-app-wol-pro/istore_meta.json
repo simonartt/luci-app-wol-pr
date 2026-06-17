@@ -1,0 +1,16 @@
+{
+  "name": "wol-pro",
+  "title": "局域网唤醒 Pro",
+  "title_en": "Wake-on-LAN Pro",
+  "description": "一个现代化的局域网唤醒插件，支持设备记忆、图块展示和一键唤醒。",
+  "description_en": "A modern Wake-on-LAN plugin with device memory, tile-based UI, and one-click wake.",
+  "description_zh-cn": "一个现代化的局域网唤醒插件，支持设备记忆、图块展示和一键唤醒。",
+  "version": "1.0.0",
+  "author": "Simon",
+  "website": "",
+  "tags": ["network", "wol", "wake-on-lan", "tool"],
+  "depends": ["luci-app-wol-pro", "etherwake"],
+  "flags": ["entrysh"],
+  "uci": "wol-pro",
+  "category": "Network"
+}

@@ -1,0 +1,444 @@
+﻿<%+header%>
+<style>
+:root {
+  --bg: #0a0a12;
+  --surface: #14141f;
+  --surface-hover: #1c1c2e;
+  --elevated: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.12);
+  --text: rgba(255,255,255,0.92);
+  --text2: rgba(255,255,255,0.6);
+  --text3: rgba(255,255,255,0.35);
+  --text4: rgba(255,255,255,0.2);
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --accent-glow: rgba(99,102,241,0.25);
+  --success: #10b981;
+  --success-glow: rgba(16,185,129,0.2);
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --shadow: 0 0 0 1px rgba(255,255,255,0.06),0 2px 16px rgba(0,0,0,0.3);
+  --shadow-lg: 0 0 0 1px rgba(255,255,255,0.08),0 8px 40px rgba(0,0,0,0.4);
+  --t: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --font: -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --bg-glow1: rgba(99,102,241,0.06);
+  --bg-glow2: rgba(16,185,129,0.04);
+}
+.light {
+  --bg: #f1f5f9;
+  --surface: rgba(255,255,255,0.65);
+  --surface-hover: #f8fafc;
+  --elevated: rgba(0,0,0,0.03);
+  --border: rgba(0,0,0,0.06);
+  --border-hover: rgba(0,0,0,0.1);
+  --text: rgba(15,23,42,0.92);
+  --text2: rgba(15,23,42,0.55);
+  --text3: rgba(15,23,42,0.35);
+  --text4: rgba(15,23,42,0.18);
+  --accent: #4f46e5;
+  --accent-light: #6366f1;
+  --accent-glow: rgba(79,70,229,0.15);
+  --success: #059669;
+  --success-glow: rgba(5,150,105,0.12);
+  --danger: #dc2626;
+  --warning: #d97706;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);
+  --bg-glow1: transparent;
+  --bg-glow2: transparent;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5;transition:background .3s,color .3s}
+body::before{content:";position:fixed;top:-50%;left:-25%;width:150%;height:100%;background:radial-gradient(ellipse 800px 600px at 20% 20%,var(--bg-glow1),transparent),radial-gradient(ellipse 600px 400px at 80% 80%,var(--bg-glow2),transparent);pointer-events:none;z-index:0;transition:background .5s}
+.app-shell{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:28px 32px 48px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;padding:14px 20px;background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);transition:background .3s,border .3s,box-shadow .3s}
+.top-left{display:flex;align-items:center;gap:14px}
+.app-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;color:white;box-shadow:0 0 20px var(--accent-glow);position:relative;transition:box-shadow .3s}
+.app-icon::after{content:";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.15));pointer-events:none}
+.title-group h1{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-0.02em}
+.title-group .sub{font-size:12px;color:var(--text3);font-weight:400;letter-spacing:0.3px}
+.top-right{display:flex;align-items:center;gap:8px}
+.nav-pills{display:flex;background:var(--elevated);border-radius:10px;padding:3px;border:1px solid var(--border)}
+.nav-pill{padding:7px 18px;border:none;background:transparent;border-radius:7px;font-size:12.5px;font-weight:500;color:var(--text3);cursor:pointer;transition:var(--t);font-family:var(--font);letter-spacing:0.2px}
+.nav-pill:hover{color:var(--text2)}
+.nav-pill.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+.nav-pill svg{width:14px;height:14px;vertical-align:text-bottom;margin-right:4px;display:inline}
+.theme-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--t);flex-shrink:0}
+.theme-btn:hover{background:var(--elevated);color:var(--text);border-color:var(--border-hover)}
+.theme-btn svg{width:16px;height:16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.stat{background:var(--surface);border-radius:var(--r-md);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;transition:var(--t)}
+.stat:hover{border-color:var(--border-hover);transform:translateY(-1px)}
+.stat-icon{width:42px;height:42px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stat-icon.blue{background:rgba(99,102,241,0.12);color:var(--accent-light)}
+.stat-icon.green{background:rgba(16,185,129,0.1);color:var(--success);box-shadow:0 0 12px var(--success-glow)}
+.stat-icon.red{background:rgba(239,68,68,0.08);color:var(--danger)}
+.stat-icon.amber{background:rgba(245,158,11,0.08);color:var(--warning)}
+.stat-icon svg{width:20px;height:20px}
+.stat-info .val{font-size:22px;font-weight:700;color:var(--text);line-height:1.2;letter-spacing:-0.02em}
+.stat-info .lbl{font-size:12px;color:var(--text3);font-weight:500;letter-spacing:0.1px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;flex-wrap:wrap}
+.search{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:0 14px;gap:8px;flex:1;max-width:340px;transition:var(--t)}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.search svg{width:15px;height:15px;color:var(--text4);flex-shrink:0;opacity:0.7}
+.search input{border:none;outline:none;background:transparent;padding:10px 0;font-size:13px;font-family:var(--font);color:var(--text);width:100%;transition:color .3s}
+.search input::placeholder{color:var(--text4)}
+.toolbar-actions{display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:var(--t);white-space:nowrap;letter-spacing:0.1px}
+.btn-pri{background:linear-gradient(135deg,var(--accent),#7c3aed);color:white;box-shadow:0 1px 4px var(--accent-glow)}
+.btn-pri:hover{transform:translateY(-1px);box-shadow:0 4px 16px var(--accent-glow)}
+.btn-sec{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+.btn-sec:hover{border-color:var(--border-hover);background:var(--surface-hover)}
+.btn svg{width:14px;height:14px}
+.layout-toggle{display:flex;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface)}
+.layout-toggle button{border:none;background:transparent;padding:7px 10px;cursor:pointer;color:var(--text4);transition:var(--t);display:flex;align-items:center}
+.layout-toggle button.active{background:var(--accent);color:white}
+.layout-toggle button:not(:last-child){border-right:1px solid var(--border)}
+.layout-toggle svg{width:15px;height:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);box-shadow:var(--shadow);padding:20px;position:relative;transition:var(--t);overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;transition:background .3s,box-shadow .3s}
+.card.online::before{background:linear-gradient(90deg,var(--success),rgba(16,185,129,0.3));box-shadow:0 0 12px var(--success-glow)}
+.card.offline::before{background:linear-gradient(90deg,var(--border),transparent)}
+.card.pending::before{background:linear-gradient(90deg,var(--warning),rgba(245,158,11,0.3))}
+.card:hover{border-color:var(--border-hover);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.s-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:0.2px}
+.s-badge.green{background:rgba(16,185,129,0.1);color:var(--success)}
+.s-badge.gray{background:var(--elevated);color:var(--text4)}
+.s-badge.amber{background:rgba(245,158,11,0.08);color:var(--warning)}
+.s-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.s-dot.green{background:var(--success);box-shadow:0 0 6px var(--success-glow)}
+.s-dot.gray{background:var(--text4)}.s-dot.amber{background:var(--warning)}
+.c-actions{display:flex;gap:2px}
+.c-btn{width:30px;height:30px;border:none;background:transparent;border-radius:var(--r-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text4);transition:var(--t)}
+.c-btn:hover{background:var(--elevated);color:var(--text2)}
+.c-btn svg{width:14px;height:14px}
+.c-btn.wake{color:var(--accent-light);background:rgba(99,102,241,0.08);width:34px;height:34px;border-radius:50%;margin-right:2px}
+.c-btn.wake:hover{background:var(--accent);color:white;transform:scale(1.08);box-shadow:0 0 16px var(--accent-glow)}
+.c-btn.del:hover{background:rgba(239,68,68,0.1);color:var(--danger)}
+.device-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;letter-spacing:-0.01em}
+.meta{display:flex;flex-direction:column;gap:6px}
+.m-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text2)}
+.m-row svg{width:13px;height:13px;flex-shrink:0;opacity:0.5;color:var(--text3)}
+.mono{font-family:'SF Mono','Fira Code','Consolas',monospace;font-size:11.5px;color:var(--text2);font-weight:500;letter-spacing:0.2px}
+.card-ft{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.iface-tag{font-size:10.5px;font-weight:500;color:var(--text4);background:var(--elevated);padding:2px 8px;border-radius:4px;letter-spacing:0.3px;text-transform:uppercase}
+.notes-text{font-size:11px;color:var(--text4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+.empty-state{grid-column:1/-1;text-align:center;padding:80px 20px;background:var(--surface);border-radius:var(--r-lg);border:1px dashed var(--border)}
+.empty-icon{width:72px;height:72px;margin:0 auto 20px;background:rgba(99,102,241,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px var(--accent-glow)}
+.empty-icon svg{width:32px;height:32px;color:var(--accent-light)}
+.empty-state h3{font-size:17px;font-weight:600;color:var(--text);margin-bottom:6px}
+.empty-state p{font-size:13px;color:var(--text3);margin-bottom:24px;max-width:360px;margin:0 auto 24px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:0 0 0 1px var(--border),0 24px 80px rgba(0,0,0,0.4);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;transition:background .3s}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:22px 24px 0}
+.modal-hdr h3{font-size:16px;font-weight:600;color:var(--text);letter-spacing:-0.01em}
+.modal-close{width:32px;height:32px;border:none;background:transparent;border-radius:var(--r-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text4);transition:var(--t)}
+.modal-close:hover{background:var(--elevated);color:var(--text2)}
+.modal-close svg{width:16px;height:16px}
+.modal-body{padding:20px 24px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;letter-spacing:0.2px}
+.fg label .req{color:var(--danger);margin-left:2px}
+.fc{width:100%;padding:9px 13px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:13.5px;font-family:var(--font);color:var(--text);background:var(--bg);transition:var(--t);outline:none}
+.fc:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.fc::placeholder{color:var(--text4)}select.fc{padding:9px 11px;cursor:pointer}
+.f-hint{font-size:11px;color:var(--text4);margin-top:4px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-ft{display:flex;justify-content:flex-end;gap:10px;padding:0 24px 22px}
+.toast-c{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:2000;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:var(--r-sm);font-size:13px;font-weight:500;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-lg);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);transition:background .3s,border .3s,opacity .3s,transform .3s;pointer-events:auto}
+.toast.removing{opacity:0;transform:translateY(8px)}
+.toast svg{width:16px;height:16px;flex-shrink:0}
+.s-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.s-card{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:20px}
+.s-line{height:12px;background:var(--elevated);border-radius:4px;margin-bottom:10px}.s-line.s1{width:35%}.s-line.s2{width:65%}.s-line.s3{width:85%}
+.list-l{display:none;flex-direction:column;gap:4px}
+.list-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 18px;display:flex;align-items:center;gap:16px;transition:var(--t)}
+.list-item:hover{border-color:var(--border-hover);background:var(--surface-hover)}
+.ls{width:6px;height:6px;border-radius:50%;flex-shrink:0}.ls.green{background:var(--success);box-shadow:0 0 6px var(--success-glow)}.ls.gray{background:var(--text4)}.ls.amber{background:var(--warning)}
+.ln{font-weight:600;font-size:13px;color:var(--text);min-width:130px}
+.lm{font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--text3);min-width:120px;letter-spacing:0.2px}
+.li{font-size:12px;color:var(--text2);min-width:100px}
+.l-info{flex:1;font-size:11px;color:var(--text4)}
+.l-actions{display:flex;gap:4px;flex-shrink:0}
+.show-grid .grid{display:grid}.show-grid .list-l{display:none}
+.show-list .grid{display:none}.show-list .list-l{display:flex}
+@media(max-width:768px){
+  .app-shell{padding:16px}.top-bar,.top-right{flex-direction:column;gap:8px}.top-bar{align-items:stretch;gap:12px}
+  .nav-pills{width:100%;justify-content:center}.top-right{flex-direction:row;justify-content:space-between}
+  .stats{grid-template-columns:repeat(2,1fr)}.toolbar{flex-direction:column;align-items:stretch}
+  .search{max-width:100%}.f-row{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.list-item{flex-wrap:wrap;gap:8px}
+}
+@media(max-width:480px){.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app-shell" id="app">
+  <header class="top-bar">
+    <div class="top-left">
+      <div class="app-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div class="title-group">
+        <h1><%:Wake-on-LAN Pro%></h1>
+        <div class="sub"><%:Network Wake Management Panel%></div>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="nav-pills">
+        <button class="nav-pill active" data-view="devices">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <%:Devices%>
+        </button>
+        <a class="nav-pill" href="<%=luci.dispatcher.build_url("admin/services/wol-pro/logs")%>" data-view="logs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <%:Logs%>
+        </a>
+      </div>
+      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="<%:Toggle theme%>">
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </header>
+  <div class="stats" id="statsBar">
+    <div class="stat"><div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="stat-info"><div class="val" id="sTotal">00</div><div class="lbl"><%:Total%></div></div></div>
+    <div class="stat"><div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="stat-info"><div class="val" id="sOnline">00</div><div class="lbl"><%:Online%></div></div></div>
+    <div class="stat"><div class="stat-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4" y1="4" x2="20" y2="20"/></svg></div><div class="stat-info"><div class="val" id="sOffline">00</div><div class="lbl"><%:Offline%></div></div></div>
+    <div class="stat"><div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-info"><div class="val" id="sPending">00</div><div class="lbl"><%:Pending%></div></div></div>
+  </div>
+  <div class="toolbar">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="<%:Search devices...%>" oninput="filterDevices()">
+    </div>
+    <div class="toolbar-actions">
+      <div class="layout-toggle">
+        <button class="active" onclick="setLayout('grid')" title="<%:Grid view%>">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
+        <button onclick="setLayout('list')" title="<%:List view%>">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+      </div>
+      <button class="btn btn-pri" onclick="openAddModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <%:Add Device%>
+      </button>
+    </div>
+  </div>
+  <div id="container" class="show-grid">
+    <div class="s-grid" id="skeleton">
+      <div class="s-card"><div class="s-line s1"></div><div class="s-line s2"></div><div class="s-line s3"></div></div>
+      <div class="s-card"><div class="s-line s1"></div><div class="s-line s2"></div><div class="s-line s3"></div></div>
+      <div class="s-card"><div class="s-line s1"></div><div class="s-line s2"></div><div class="s-line s3"></div></div>
+      <div class="s-card"><div class="s-line s1"></div><div class="s-line s2"></div><div class="s-line s3"></div></div>
+    </div>
+    <div class="grid" id="deviceGrid"></div>
+    <div class="list-l" id="deviceList"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="deviceModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modalTitle"><%:Add Device%></h3>
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form id="deviceForm" onsubmit="saveDevice(event)">
+      <div class="modal-body">
+        <input type="hidden" id="deviceSid">
+        <div class="fg">
+          <label><%:Scan network%></label>
+          <select class="fc" id="deviceScanList" onchange="onScanSelect(this)">
+            <option value="">— <%:Manual entry%> —</option>
+          </select>
+          <div class="f-hint"><%:Select an online device to auto-fill MAC, IP and interface%></div>
+        </div>
+        <div class="fg-sep"><span><%:Or fill manually%></span></div>
+        <div class="fg"><label><%:Device name%> <span class="req">*</span></label><input class="fc" id="deviceName" placeholder="e.g. Living Room PC" required></div>
+        <div class="fg"><label>MAC <span class="req">*</span></label><input class="fc" id="deviceMac" placeholder="AA:BB:CC:DD:EE:FF" required><div class="f-hint"><%:Format%>: AA:BB:CC:DD:EE:FF</div></div>
+        <div class="f-row">
+          <div class="fg"><label>IP</label><input class="fc" id="deviceIp" placeholder="192.168.1.100"></div>
+          <div class="fg"><label><%:Interface%></label><input class="fc" id="deviceIface" value="br-lan"></div>
+        </div>
+        <div class="fg"><label><%:Broadcast%></label><input class="fc" id="deviceBroadcast" value="255.255.255.255"></div>
+        <div class="fg"><label><%:Notes%></label><input class="fc" id="deviceNotes" placeholder="<%:Additional info...%>"></div>
+      </div>
+      <div class="modal-ft">
+        <button type="button" class="btn btn-sec" onclick="closeModal()"><%:Cancel%></button>
+        <button type="submit" class="btn btn-pri"><%:Save Device%></button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="toast-c" id="toastContainer"></div>
+<style>
+.fg-sep{display:flex;align-items:center;gap:12px;margin:18px 0 14px;color:var(--text4);font-size:11px;font-weight:500;letter-spacing:0.3px}
+.fg-sep::before,.fg-sep::after{content:"";flex:1;height:1px;background:var(--border)}
+</style>
+<script>
+var BASE_URL = '<%=luci.dispatcher.build_url("admin","services","wol-pro")%>';
+var icons={
+  play:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" width="15" height="15"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  stop:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" width="15" height="15"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  mac:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>',
+  ip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>',
+  cross:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+};
+var devices=[],layout="grid",scanDevices=[];
+function toggleTheme(){
+  var d=document.documentElement,b=document.getElementById("themeToggle"),i=document.getElementById("themeIcon");
+  d.classList.toggle("light");var isLight=d.classList.contains("light");
+  if(isLight){i.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';b.title="<%:Switch to dark mode%>"}
+  else{i.innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';b.title="<%:Switch to light mode%>"}
+  localStorage.setItem("wol-theme",isLight?"light":"dark");
+}
+function loadTheme(){
+  var saved=localStorage.getItem("wol-theme"),b=document.getElementById("themeToggle"),i=document.getElementById("themeIcon");
+  if(saved==="light"||(!saved&&!window.matchMedia("(prefers-color-scheme:dark)").matches)){
+    document.documentElement.classList.add("light");
+    i.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';b.title="<%:Switch to dark mode%>";
+  }
+}
+function showToast(msg,tp){
+  var c=document.getElementById("toastContainer"),t=document.createElement("div");
+  t.className="toast "+(tp||"e");
+  t.innerHTML=(tp==="s"?icons.check:icons.cross)+"<span>"+msg+"</span>";
+  c.appendChild(t);setTimeout(function(){t.classList.add("removing");setTimeout(function(){t.remove()},300)},2500);
+}
+function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML}
+function render(){updateStats();rGrid();rList()}
+function updateStats(){
+  var t=devices.length,on=devices.filter(function(d){return d.online===true}).length,off=devices.filter(function(d){return d.online===false}).length,pen=devices.filter(function(d){return d.online===undefined||d.online===null}).length;
+  document.getElementById("sTotal").textContent=String(t).padStart(2,"0");document.getElementById("sOnline").textContent=String(on).padStart(2,"0");
+  document.getElementById("sOffline").textContent=String(off).padStart(2,"0");document.getElementById("sPending").textContent=String(pen).padStart(2,"0");
+}
+function filtered(){
+  var q=document.getElementById("searchInput").value.toLowerCase().trim();
+  return q?devices.filter(function(d){return (d.name&&d.name.toLowerCase().includes(q))||(d.mac&&d.mac.toLowerCase().includes(q))||(d.ipaddr&&d.ipaddr.toLowerCase().includes(q))}):devices;
+}
+function rGrid(){
+  var c=document.getElementById("deviceGrid"),f=filtered();
+  if(!f.length){
+    c.innerHTML='<div class="empty-state"><div class="empty-icon">'+icons.ip+'</div><h3>'+(devices.length===0?"<%:No devices yet%>":"<%:No matches%>")+'</h3><p>'+(devices.length===0?"<%:Add your first device to wake it from anywhere.%>":"<%:Try different search keywords%>")+'</p>'+(devices.length===0?'<button class="btn btn-pri" onclick="openAddModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> <%:Add First Device%></button>':"")+'</div>';
+    return;
+  }
+  c.innerHTML=f.map(function(d){
+    var sc=d.online===true?"green":d.online===false?"gray":"amber",sl=d.online===true?"<%:Online%>":d.online===false?"<%:Offline%>":"<%:Checking%>";
+    var iv=d.iface||"br-lan",nv=d.notes||"";
+    return '<div class="card '+sc+'" data-sid="'+d.sid+'"><div class="card-top"><span class="s-badge '+sc+'"><span class="s-dot '+sc+'"></span>'+sl+'</span><div class="c-actions"><button class="c-btn wake" onclick="wakeDevice(\''+d.sid+'\')" title="<%:Wake%>">'+icons.play+'</button><button class="c-btn" onclick="openEditModal(\''+d.sid+'\')" title="<%:Edit%>">'+icons.edit+'</button><button class="c-btn del" onclick="deleteDevice(\''+d.sid+'\')" title="<%:Delete%>">'+icons.del+'</button></div></div><div class="device-name">'+esc(d.name)+'</div><div class="meta"><div class="m-row">'+icons.mac+'<span class="mono">'+esc(d.mac)+'</span></div><div class="m-row">'+icons.ip+'<span>'+(d.ipaddr?esc(d.ipaddr):"—")+'</span></div></div><div class="card-ft"><span class="iface-tag">'+esc(iv)+'</span>'+(nv?'<span class="notes-text">'+esc(nv)+'</span>':"")+'</div></div>';
+  }).join("");
+}
+function rList(){
+  var c=document.getElementById("deviceList"),f=filtered();
+  if(!f.length){c.innerHTML="";return}
+  c.innerHTML=f.map(function(d){
+    var sc=d.online===true?"green":d.online===false?"gray":"amber",iv=d.iface||"br-lan",nv=d.notes||"";
+    return '<div class="list-item"><span class="ls '+sc+'"></span><span class="ln">'+esc(d.name)+'</span><span class="lm">'+esc(d.mac)+'</span><span class="li">'+(d.ipaddr?esc(d.ipaddr):"—")+'</span><span class="l-info">'+esc(nv)+'</span><div class="l-actions"><button class="c-btn wake" onclick="wakeDevice(\''+d.sid+'\')" title="<%:Wake%>" style="width:28px;height:28px">'+icons.play+'</button><button class="c-btn" onclick="openEditModal(\''+d.sid+'\')" title="<%:Edit%>" style="width:28px;height:28px">'+icons.edit+'</button><button class="c-btn del" onclick="deleteDevice(\''+d.sid+'\')" title="<%:Delete%>" style="width:28px;height:28px">'+icons.del+'</button></div></div>';
+  }).join("");
+}
+function setLayout(v){layout=v;var p=document.getElementById("container");p.classList.remove("show-grid","show-list");p.classList.add(v==="grid"?"show-grid":"show-list");document.querySelectorAll(".layout-toggle button").forEach(function(b,i){b.classList.toggle("active",(i===0&&v==="grid")||(i===1&&v==="list"))})}
+function filterDevices(){rGrid();rList()}
+function wakeDevice(sid){
+  var d=devices.find(function(x){return x.sid===sid});if(!d)return;
+  var btn=document.querySelector('.card[data-sid="'+sid+'"] .wake');
+  if(btn){btn.innerHTML=icons.stop;btn.style.background="#10b981";btn.style.color="white";setTimeout(function(){btn.innerHTML=icons.play;btn.style.background="";btn.style.color=""},1500)}
+  fetch(BASE_URL+"/wake",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mac:d.mac,broadcast:d.broadcast||"255.255.255.255",iface:d.iface||"br-lan",name:d.name})})
+    .then(function(r){return r.json()}).then(function(data){showToast(data.message,data.success?"s":"e")}).catch(function(e){showToast("<%:Wake failed%>: "+e.message,"e")});
+}
+function deleteDevice(sid){
+  var d=devices.find(function(x){return x.sid===sid});if(!d)return;
+  if(!confirm("<%:Are you sure you want to delete "%>"+d.name+"<%:?%>"))return;
+  fetch(BASE_URL+"/delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({".name":d.sid})})
+    .then(function(r){return r.json()}).then(function(data){
+      if(data.success){devices=devices.filter(function(x){return x.sid!==sid});render();showToast("<%:Deleted%> "+d.name,"s")}
+      else{showToast("<%:Delete failed%>","e")}
+    }).catch(function(e){showToast("<%:Delete failed%>: "+e.message,"e")});
+}
+function openAddModal(){
+  document.getElementById("modalTitle").innerHTML='<%:Add Device%>';document.getElementById("deviceForm").reset();
+  document.getElementById("deviceSid").value="";document.getElementById("deviceBroadcast").value="255.255.255.255";document.getElementById("deviceIface").value="br-lan";
+  document.getElementById("deviceModal").classList.add("active");
+  var sel=document.getElementById("deviceScanList");sel.selectedIndex=0;
+  loadScanList();
+}
+function openEditModal(sid){
+  var d=devices.find(function(x){return x.sid===sid});if(!d)return;
+  document.getElementById("modalTitle").innerHTML='<%:Edit Device%>';document.getElementById("deviceSid").value=d.sid;
+  document.getElementById("deviceName").value=d.name;document.getElementById("deviceMac").value=d.mac;document.getElementById("deviceIp").value=d.ipaddr||"";
+  document.getElementById("deviceBroadcast").value=d.broadcast||"255.255.255.255";document.getElementById("deviceIface").value=d.iface||"br-lan";document.getElementById("deviceNotes").value=d.notes||"";
+  document.getElementById("deviceModal").classList.add("active");
+}
+function closeModal(){document.getElementById("deviceModal").classList.remove("active")}
+document.getElementById("deviceModal").addEventListener("click",function(e){if(e.target===this)closeModal()});
+function saveDevice(e){
+  e.preventDefault();
+  var sid=document.getElementById("deviceSid").value,name=document.getElementById("deviceName").value.trim(),mac=document.getElementById("deviceMac").value.trim().toUpperCase();
+  var ip=document.getElementById("deviceIp").value.trim(),bc=document.getElementById("deviceBroadcast").value.trim(),ifc=document.getElementById("deviceIface").value.trim(),nt=document.getElementById("deviceNotes").value.trim();
+  if(!mac){showToast("<%:MAC address is required%>","e");return}
+  var data={"name":name,"mac":mac,"ipaddr":ip,"broadcast":bc,"iface":ifc,"notes":nt};
+  if(sid&&sid!=""){data[".name"]=sid}
+  fetch(BASE_URL+"/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
+    .then(function(r){return r.json()}).then(function(res){
+      if(res.success){closeModal();loadDevices();showToast(sid?"<%:Device updated%>":"<%:Device added%>","s")}
+      else{showToast("<%:Save failed%>: "+(res.message||""),"e")}
+    }).catch(function(e){showToast("<%:Save failed%>: "+e.message,"e")});
+}
+var scanLoading=false;
+function loadScanList(){
+  var sel=document.getElementById("deviceScanList");
+  if(scanLoading)return;scanLoading=true;
+  var placeholder=sel.options[0];sel.innerHTML="";sel.appendChild(placeholder);
+  fetch(BASE_URL+"/scan_arp").then(function(r){return r.json()}).then(function(data){
+    scanDevices=data.devices||[];
+    scanDevices.forEach(function(d){
+      var opt=document.createElement("option");opt.value=d.mac;opt.dataset.ip=d.ip;opt.dataset.mac=d.mac;opt.dataset.iface=d.iface||"br-lan";
+      opt.textContent=d.ip+" — "+d.mac;sel.appendChild(opt);
+    });
+    scanLoading=false;
+  }).catch(function(){scanLoading=false});
+}
+function onScanSelect(sel){
+  var opt=sel.options[sel.selectedIndex];
+  if(!opt||!opt.value){return}
+  document.getElementById("deviceMac").value=opt.dataset.mac;
+  document.getElementById("deviceIp").value=opt.dataset.ip;
+  document.getElementById("deviceIface").value=opt.dataset.iface||"br-lan";
+}
+function loadDevices(){
+  var sk=document.getElementById("skeleton");if(sk)sk.style.display="none";
+  document.getElementById("deviceGrid").innerHTML='<div class="s-grid"><div class="s-card"><div class="s-line s1"></div><div class="s-line s2"></div><div class="s-line s3"></div></div><div class="s-card"><div class="s-line s1"></div><div class="s-line s2"></div><div class="s-line s3"></div></div></div>';
+  fetch(BASE_URL+"/list").then(function(r){return r.json()}).then(function(data){
+    if(!data.success){showToast("<%:Failed to load devices%>","e");return}
+    devices=(data.devices||[]).map(function(d){return {sid:d[".name"]||"",name:d.name||"",mac:d.mac||"",ipaddr:d.ipaddr||"",broadcast:d.broadcast||"255.255.255.255",iface:d.iface||"br-lan",notes:d.notes||"",online:null}});
+    render();
+    devices.forEach(function(d){if(d.mac)checkStatus(d)});
+  }).catch(function(e){showToast("<%:Failed to load devices%>","e")});
+}
+function checkStatus(d){
+  fetch(BASE_URL+"/status?mac="+encodeURIComponent(d.mac)).then(function(r){return r.json()}).then(function(data){
+    var card=document.querySelector('.card[data-sid="'+d.sid+'"]');
+    if(!card)return;
+    var badge=card.querySelector(".s-badge"),dot=card.querySelector(".s-dot");
+    if(data.online){
+      d.online=true;card.className="card online";if(badge){badge.className="s-badge green";badge.innerHTML='<span class="s-dot green"></span><%:Online%>'}
+    }else{
+      d.online=false;card.className="card offline";if(badge){badge.className="s-badge gray";badge.innerHTML='<span class="s-dot gray"></span><%:Offline%>'}
+    }
+    updateStats();
+  }).catch(function(){});
+}
+loadTheme();
+setTimeout(function(){loadDevices()},200);
+</script>
+<%+footer%>

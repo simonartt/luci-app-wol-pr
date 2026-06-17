@@ -1,0 +1,60 @@
+name: Build luci-app-wol-pro
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version override (optional)'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build in openwrt/sdk container
+        run: |
+          mkdir -p output
+          docker run --rm \
+            -v "${{ github.workspace }}/luci-app-wol-pro:/tmp/luci-app-wol-pro:ro" \
+            -v "${{ github.workspace }}/output:/output" \
+            -w /builder \
+            openwrt/sdk:rockchip-armv8-openwrt-23.05 \
+            bash -c "
+              set -ex
+              echo '>>> Setup SDK...'
+              ./setup.sh
+
+              echo '>>> Copy plugin source...'
+              mkdir -p package
+              cp -r /tmp/luci-app-wol-pro package/luci-app-wol-pro
+
+              echo '>>> Update feeds...'
+              ./scripts/feeds update luci
+              ./scripts/feeds install -a -p luci
+
+              echo '>>> Configure build...'
+              echo CONFIG_PACKAGE_luci-app-wol-pro=m >> .config
+              make defconfig
+
+              echo '>>> Compile...'
+              make package/luci-app-wol-pro/clean V=s
+              make package/luci-app-wol-pro/compile V=s -j\$(nproc)
+
+              echo '>>> Collect artifacts...'
+              find bin/packages -name 'luci-app-wol-pro*.ipk' -exec cp -v {} /output/ \;
+              ls -la /output/
+            "
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: luci-app-wol-pro
+          path: output/
+          if-no-files-found: error

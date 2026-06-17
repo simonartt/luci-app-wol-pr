@@ -1,0 +1,13 @@
+# 编译环境（旧产物、SDK 缓存、日志）
+build-env/
+
+# CodeWhale / WorkBuddy 内部文件
+.deepseek/
+.workbuddy/
+
+# 系统文件
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+*~

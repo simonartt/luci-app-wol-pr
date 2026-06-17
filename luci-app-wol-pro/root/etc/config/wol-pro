@@ -1,0 +1,11 @@
+config wol-pro 'global'
+	option enabled '1'
+
+# Example device entries (uncomment to use):
+# config device 'my_pc'
+# 	option name '我的电脑'
+# 	option mac 'AA:BB:CC:DD:EE:FF'
+# 	option ipaddr '192.168.1.100'
+# 	option broadcast '255.255.255.255'
+# 	option iface 'br-lan'
+# 	option notes '书房台式机'
