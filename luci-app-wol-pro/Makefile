@@ -31,10 +31,9 @@ endef
 
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./luasrc $(PKG_BUILD_DIR)/luasrc 2>/dev/null || true
-	$(CP) ./root $(PKG_BUILD_DIR)/root 2>/dev/null || true
-	$(CP) ./htdocs $(PKG_BUILD_DIR)/htdocs 2>/dev/null || true
-	$(CP) ./istore_meta.json $(PKG_BUILD_DIR)/istore_meta.json 2>/dev/null || true
+	$(CP) ./package/luci-app-wol-pro/luasrc $(PKG_BUILD_DIR)/
+	$(CP) ./package/luci-app-wol-pro/root $(PKG_BUILD_DIR)/
+	$(CP) ./package/luci-app-wol-pro/istore_meta.json $(PKG_BUILD_DIR)/
 endef
 
 define Build/Configure
