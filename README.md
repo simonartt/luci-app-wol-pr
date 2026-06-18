@@ -1,5 +1,5 @@
 # luci-app-wol-pro - 局域网唤醒插件 (iStoreOS)
-
+注意:这是一个vibe coding项目
 一个现代化的 iStoreOS 局域网唤醒插件，支持设备记忆、图块化展示和一键唤醒。
 
 ## 功能特性
