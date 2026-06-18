@@ -54,8 +54,7 @@ jobs:
       - name: Compile
         working-directory: ${{ env.SDK_DIR }}
         run: |
-          make package/luci-app-wol-pro/clean V=s
-          make package/luci-app-wol-pro/compile V=s -j$(nproc)
+          make package/luci-app-wol-pro/compile V=s -j1 2>&1 | head -200
 
       - name: Collect artifacts
         run: |
