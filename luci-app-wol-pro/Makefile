@@ -11,7 +11,7 @@ PKG_VERSION:=1.1.0
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Simon
 PKG_LICENSE:=Apache-2.0
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -29,14 +29,9 @@ define Package/luci-app-wol-pro/description
   Features: device memory, one-click wake, online detection, custom notes.
 endef
 
-define Build/Prepare
-	rm -rf $(PKG_BUILD_DIR)
-	mkdir -p $(PKG_BUILD_DIR)/luasrc $(PKG_BUILD_DIR)/root
-	$(CP) ./package/luci-app-wol-pro/luasrc/* $(PKG_BUILD_DIR)/luasrc/
-	$(CP) ./package/luci-app-wol-pro/root/* $(PKG_BUILD_DIR)/root/
-	$(CP) ./htdocs $(PKG_BUILD_DIR)/htdocs 2>/dev/null || true
-	$(CP) ./package/luci-app-wol-pro/istore_meta.json $(PKG_BUILD_DIR)/istore_meta.json
-endef
+# Note: No Build/Prepare needed.
+# The package directory itself (luasrc/, root/, etc.) is automatically
+# used as the source by OpenWrt's package build system.
 
 define Build/Configure
 endef
@@ -52,25 +47,27 @@ define Package/luci-app-wol-pro/install
 	$(INSTALL_DIR) $(1)/usr/share/istore
 
 	# Install Lua controller
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/controller/wol-pro.lua $(1)/usr/lib/lua/luci/controller/
+	$(INSTALL_DATA) ./luasrc/controller/wol-pro.lua $(1)/usr/lib/lua/luci/controller/
 
-	# Install Lua view
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/wol-pro/index.htm $(1)/usr/lib/lua/luci/view/wol-pro/
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/wol-pro/logs.htm $(1)/usr/lib/lua/luci/view/wol-pro/
+	# Install Lua views
+	$(INSTALL_DATA) ./luasrc/view/wol-pro/index.htm $(1)/usr/lib/lua/luci/view/wol-pro/
+	if [ -f ./luasrc/view/wol-pro/logs.htm ]; then \
+		$(INSTALL_DATA) ./luasrc/view/wol-pro/logs.htm $(1)/usr/lib/lua/luci/view/wol-pro/ ; \
+	fi
 
 	# Install config file
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/root/etc/config/wol-pro $(1)/etc/config/
+	$(INSTALL_DATA) ./root/etc/config/wol-pro $(1)/etc/config/
 
 	# Install iStore status script
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/root/usr/libexec/istoree/wol-pro.sh $(1)/usr/libexec/istoree/
+	$(INSTALL_BIN) ./root/usr/libexec/istoree/wol-pro.sh $(1)/usr/libexec/istoree/
 
 	# Install iStore metadata
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/istore_meta.json $(1)/usr/share/istore/$(PKG_NAME).json
+	$(INSTALL_DATA) ./istore_meta.json $(1)/usr/share/istore/$(PKG_NAME).json
 endef
 
 define Package/luci-app-wol-pro/postinst
 #!/bin/sh
-[ -n "${IPKG_INSTROOT}" ] || {
+[ -n "$${IPKG_INSTROOT}" ] || {
 	rm -f /tmp/luci-indexcache.*
 	rm -rf /tmp/luci-modulecache/
 	killall -HUP rpcd 2>/dev/null || true
@@ -80,7 +77,7 @@ endef
 
 define Package/luci-app-wol-pro/postrm
 #!/bin/sh
-[ -n "${IPKG_INSTROOT}" ] || {
+[ -n "$${IPKG_INSTROOT}" ] || {
 	rm -f /tmp/luci-indexcache.*
 	rm -rf /tmp/luci-modulecache/
 	killall -HUP rpcd 2>/dev/null || true
