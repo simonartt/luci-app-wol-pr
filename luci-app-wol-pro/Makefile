@@ -29,10 +29,12 @@ define Package/luci-app-wol-pro/description
   Features: device memory, one-click wake, online detection, custom notes.
 endef
 
-# Source files path (relative to SDK root after copy step)
-PKG_SOURCE_DIR:=$(CURDIR)/package/luci-app-wol-pro
-
 define Build/Prepare
+	mkdir -p $(PKG_BUILD_DIR)
+	$(CP) ./luasrc $(PKG_BUILD_DIR)/luasrc 2>/dev/null || true
+	$(CP) ./root $(PKG_BUILD_DIR)/root 2>/dev/null || true
+	$(CP) ./htdocs $(PKG_BUILD_DIR)/htdocs 2>/dev/null || true
+	$(CP) ./istore_meta.json $(PKG_BUILD_DIR)/istore_meta.json 2>/dev/null || true
 endef
 
 define Build/Configure
@@ -48,12 +50,21 @@ define Package/luci-app-wol-pro/install
 	$(INSTALL_DIR) $(1)/usr/libexec/istoree
 	$(INSTALL_DIR) $(1)/usr/share/istore
 
-	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/luasrc/controller/wol-pro.lua $(1)/usr/lib/lua/luci/controller/
-	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/luasrc/view/wol-pro/index.htm $(1)/usr/lib/lua/luci/view/wol-pro/
-	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/luasrc/view/wol-pro/logs.htm $(1)/usr/lib/lua/luci/view/wol-pro/
-	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/root/etc/config/wol-pro $(1)/etc/config/
-	$(INSTALL_BIN) $(PKG_SOURCE_DIR)/root/usr/libexec/istoree/wol-pro.sh $(1)/usr/libexec/istoree/
-	$(INSTALL_DATA) $(PKG_SOURCE_DIR)/istore_meta.json $(1)/usr/share/istore/$(PKG_NAME).json
+	# Install Lua controller
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/controller/wol-pro.lua $(1)/usr/lib/lua/luci/controller/
+
+	# Install Lua view
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/wol-pro/index.htm $(1)/usr/lib/lua/luci/view/wol-pro/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/wol-pro/logs.htm $(1)/usr/lib/lua/luci/view/wol-pro/
+
+	# Install config file
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/root/etc/config/wol-pro $(1)/etc/config/
+
+	# Install iStore status script
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/root/usr/libexec/istoree/wol-pro.sh $(1)/usr/libexec/istoree/
+
+	# Install iStore metadata
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/istore_meta.json $(1)/usr/share/istore/$(PKG_NAME).json
 endef
 
 define Package/luci-app-wol-pro/postinst
