@@ -41,8 +41,9 @@ jobs:
       - name: Update feeds
         working-directory: ${{ env.SDK_DIR }}
         run: |
-          ./scripts/feeds update luci
+          ./scripts/feeds update luci packages
           ./scripts/feeds install -a -p luci
+          ./scripts/feeds install etherwake -p packages
 
       - name: Configure build
         working-directory: ${{ env.SDK_DIR }}
